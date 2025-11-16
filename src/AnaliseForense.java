@@ -119,7 +119,34 @@ public class AnaliseForense implements IAnaliseForenseAvancada {
     public List<String> reconstruirLinhaDoTempo(String caminhoArquivo, String sessionID) throws IOException {
         List<Alerta> alertas = lerArquivo(caminhoArquivo);
 
-        return List.of();
+        boolean foraDeOrdem = false;
+
+        for(int i = 1; i < alertas.size(); i++) {
+            if (alertas.get(i).getTimestamp() < alertas.get(i - 1).getTimestamp()) {
+                foraDeOrdem = true;
+                break;
+            }
+        }
+
+        if(foraDeOrdem) {
+            alertas.sort(Comparator.comparingLong(Alerta::getTimestamp));
+        }
+
+        Queue<String> fila = new LinkedList<>();
+
+        for(Alerta i : alertas) {
+            if(i.getSessionId().equals(sessionID)) {
+                fila.add(i.getActionType());
+            }
+        }
+
+        List<String> resultado = new ArrayList<>();
+
+        while (!fila.isEmpty()) {
+            resultado.add(fila.poll());
+        }
+
+        return resultado;
     }
 
     @Override
