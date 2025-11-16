@@ -36,11 +36,13 @@ public class AnaliseForense implements IAnaliseForenseAvancada {
         return alertas;
     }
 
-
+    /* Desafio 1: Encontrar sessões inválidas */
     @Override
-    public Set<String> desafio1_encontrarSessoesInvalidas(String caminhoArquivoCsv) throws IOException {
+    public Set<String> encontrarSessoesInvalidas(String caminhoArquivo) throws IOException {
+        List<Alerta> alertas = lerArquivo(caminhoArquivo);
+
         Set<String> sessoesInvalidas = new HashSet<>();
-        List<Alerta> alertas = lerArquivo(caminhoArquivoCsv);
+
 
         Set<String> invalidas = new HashSet<>();
 
@@ -61,17 +63,13 @@ public class AnaliseForense implements IAnaliseForenseAvancada {
         }
 
         for (Alerta a: alertas){
-
-
             String user = a.getUserId();
             String session = a.getSessionId();
             String action = a.getActionType();
 
-
             if (user == null || session == null || action == null) {
                 continue;
             }
-
 
             user = user.trim();
             session = session.trim();
@@ -89,33 +87,20 @@ public class AnaliseForense implements IAnaliseForenseAvancada {
                 pilhasPorUsuario.put(user, pilha);
             }
 
-
-
-
             if (action.equalsIgnoreCase("LOGIN")){
 
                 if (!pilha.isEmpty()){
                     invalidas.add(session);
                 }
-
-
                 pilha.push(session);
             }
-
-
             else if (action.equalsIgnoreCase("LOGOUT")){
-
-
                 if (pilha.isEmpty()){
                     invalidas.add(session);
                 }
-
-
                 else if (!pilha.peek().equals(session)) {
                     invalidas.add(session);
                 }
-
-
                 else {
                     pilha.pop();
                 }
@@ -127,8 +112,28 @@ public class AnaliseForense implements IAnaliseForenseAvancada {
             while (!pilha.isEmpty()) invalidas.add(pilha.pop());
         }
 
-
         return invalidas;
+    }
 
+    @Override
+    public List<String> reconstruirLinhaDoTempo(String caminhoArquivo, String sessionID) throws IOException {
+        List<Alerta> alertas = lerArquivo(caminhoArquivo);
+
+        return List.of();
+    }
+
+    @Override
+    public List<Alerta> priorizarAlertas(String caminhoArquivo, int n) throws IOException {
+        return List.of();
+    }
+
+    @Override
+    public Map<Long, Long>encontrarPicosDeTransferencia(String caminhoArquivo) throws IOException {
+        return Map.of();
+    }
+
+    @Override
+    public Optional<List<String>> rastrearContaminacao(String caminhoArquivo, String recursoInicial, String recursoAlvo) throws IOException {
+        return Optional.empty();
     }
 }

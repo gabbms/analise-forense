@@ -7,13 +7,13 @@ import java.util.Set;
 
  interface IAnaliseForenseAvancada {
 
-     Set<String> desafio1_encontrarSessoesInvalidas(String caminhoArquivoCsv) throws IOException;
+     Set<String> encontrarSessoesInvalidas(String caminhoArquivo) throws IOException;
 
-     List<String> desafio2_reconstruirLinhaDoTempo(String caminhoArquivoCsv, String sessionID) throws IOException;
+     List<String> reconstruirLinhaDoTempo(String caminhoArquivo, String sessionID) throws IOException;
 
-     List<Alerta> desafio3_priorizarAlertas(String caminhoArquivoCsv, int n) throws IOException;
+     List<Alerta> priorizarAlertas(String caminhoArquivo, int n) throws IOException;
 
-     Map<Long, Long> desafio4_encontrarPicosDeTransferencia(String caminhoArquivoCsv) throws IOException;
+     Map<Long, Long> encontrarPicosDeTransferencia(String caminhoArquivo) throws IOException;
 
-     Optional<List<String>> desafio5_rastrearContaminacao(String caminhoArquivoCsv, String recursoInicial, String recursoAlvo) throws IOException;
+     Optional<List<String>> rastrearContaminacao(String caminhoArquivo, String recursoInicial, String recursoAlvo) throws IOException;
 }
