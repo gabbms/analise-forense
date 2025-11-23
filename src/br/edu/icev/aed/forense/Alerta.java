@@ -35,6 +35,9 @@ public class Alerta {
         this.bytesTransferred = bytesTransferred;
     }
 
+    public Alerta(long timestamp, String sessionId, int severityLevel) {
+    }
+
     // Getters
     public long getTimestamp() {
         return timestamp;
@@ -95,7 +98,7 @@ public class Alerta {
 
     @Override
     public String toString() {
-        return String.format("br.edu.icev.aed.forense.Alerta{timestamp=%d, userId='%s', sessionId='%s', actionType='%s', " +
+        return String.format("Alerta{timestamp=%d, userId='%s', sessionId='%s', actionType='%s', " +
                         "targetResource='%s', severityLevel=%d, bytesTransferred=%d}",
                 timestamp, userId, sessionId, actionType, targetResource,
                 severityLevel, bytesTransferred);
