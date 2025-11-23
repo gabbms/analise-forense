@@ -1,3 +1,5 @@
+package br.edu.icev.aed.forense;
+
 /**
  * Classe que representa um alerta de segurança extraído dos logs.
  * Contém todas as informações de uma linha do arquivo de log.
@@ -93,7 +95,7 @@ public class Alerta {
 
     @Override
     public String toString() {
-        return String.format("Alerta{timestamp=%d, userId='%s', sessionId='%s', actionType='%s', " +
+        return String.format("br.edu.icev.aed.forense.Alerta{timestamp=%d, userId='%s', sessionId='%s', actionType='%s', " +
                         "targetResource='%s', severityLevel=%d, bytesTransferred=%d}",
                 timestamp, userId, sessionId, actionType, targetResource,
                 severityLevel, bytesTransferred);

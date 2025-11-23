@@ -1,3 +1,5 @@
+package br.edu.icev.aed.forense;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -114,6 +116,18 @@ public class AnaliseForense implements IAnaliseForenseAvancada {
 
         return invalidas;
     }
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Override
     public List<String> reconstruirLinhaDoTempo(String caminhoArquivo, String sessionID) throws IOException {
