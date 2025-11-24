@@ -14,7 +14,6 @@ public class SolucaoForense implements AnaliseForenseAvancada {
 
     // Método auxiliar para parsear uma linha do CSV e extrair os campos necessários
     private String[] parseLine(String line) {
-        // Assumindo que o CSV usa vírgula como separador e não há vírgulas dentro dos campos
         // Usar limite negativo para garantir que campos vazios no final sejam incluídos
         String[] parts = line.split(",", -1);
         if (parts.length < 7) {
@@ -118,15 +117,15 @@ public class SolucaoForense implements AnaliseForenseAvancada {
                     long bytesTransferred = Long.parseLong(parts[5].trim());
                     int severityLevel = Integer.parseInt(parts[6].trim());
 
-                    // Tentativa 1: Construtor de 7 argumentos (long, String, String, String, String, long, int)
+                    // CORREÇÃO: Construtor de 7 argumentos, com cast para int no 6º argumento
                     priorityQueue.add(new Alerta(
                             timestamp,
                             userId,
                             sessionId,
                             actionType,
                             targetResource,
-                            (int) bytesTransferred,
-                            severityLevel // Assumindo que o último é int
+                            (int) bytesTransferred, // Cast para int, pois o construtor exige int
+                            severityLevel
                     ));
                 } catch (NumberFormatException e) {
                     // Ignora linhas com formato numérico inválido, mantendo a robustez
@@ -309,13 +308,9 @@ public class SolucaoForense implements AnaliseForenseAvancada {
         }
 
         // Se o caminho não começar com o nó inicial, significa que o nó inicial não estava no grafo
-        // ou a busca falhou. Como o BFS já confirmou que o alvo foi alcançado,
-        // a única verificação necessária é se o caminho começa no start.
+        // ou a busca falhou.
         if (path.isEmpty() || !path.getFirst().equals(start)) {
-            // Se o BFS encontrou o alvo, mas a reconstrução falhou, há um erro lógico.
-            // No entanto, para fins de teste, vamos retornar o caminho encontrado pelo BFS.
-            // Se o BFS foi bem-sucedido, o caminho deve ser válido.
-            // return Collections.emptyList(); // Removido para teste
+            return Collections.emptyList(); // Retorna vazio se o caminho não for válido
         }
 
         return path;
