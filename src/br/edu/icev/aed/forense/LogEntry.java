@@ -1,4 +1,4 @@
-package br.edu.icev.aed;
+package br.edu.icev.aed.forense;
 
 // Classe de apoio para representar uma linha do log.
 public class LogEntry {

@@ -38,7 +38,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Plugin para criar o "fat JAR" (uber-jar) -->
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>

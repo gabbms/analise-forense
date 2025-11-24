@@ -1,7 +1,4 @@
-package br.edu.icev.aed;
-
-import br.edu.icev.aed.forense.Alerta;
-import br.edu.icev.aed.forense.AnaliseForenseAvancada;
+package br.edu.icev.aed.forense;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -12,7 +9,7 @@ import java.util.stream.Collectors;
 // Implementação sem o LogCache estático. Cada método realiza a leitura do arquivo.
 public class SolucaoForense implements AnaliseForenseAvancada {
 
-    // Método auxiliar para ler o arquivo e retornar a lista completa de LogEntry
+    // Método auxiliar para ler o arquivo e retornar a lista completa de br.edu.icev.aed.forense.LogEntry
     private List<LogEntry> readAllLogs(String caminhoArquivo) throws IOException {
         List<LogEntry> allLogs = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(caminhoArquivo))) {
