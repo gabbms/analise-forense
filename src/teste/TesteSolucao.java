@@ -53,7 +53,7 @@ public class TesteSolucao {
 
             // RECURSOS REAIS DO SEU LOG (Com base na saída de debug anterior)
             String origem = "/usr/bin/sshd";
-            String destino = "/var/www/html/index.html";
+            String destino = "/bin/ls";
 
             Optional<List<String>> caminho = analyzer.rastrearContaminacao(arquivoLogs, origem, destino);
 

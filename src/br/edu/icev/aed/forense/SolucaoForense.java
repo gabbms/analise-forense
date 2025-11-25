@@ -210,7 +210,7 @@ public class SolucaoForense implements AnaliseForenseAvancada {
     // DESAFIO 5: Rastrear Contaminação (O(V + E) + Custo de I/O)
     @Override
     public Optional<List<String>> rastrearContaminacao(String caminhoArquivo, String recursoInicial, String recursoAlvo) throws IOException {
-        // 1. Construção do Grafo (Requer leitura completa do arquivo)
+        // 1. Construção do Grafo (Usando Map<String, Set<String>> para evitar duplicatas)
         Map<String, Set<String>> contaminationGraph = new HashMap<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(caminhoArquivo))) {
