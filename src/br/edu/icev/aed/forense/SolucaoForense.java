@@ -28,7 +28,9 @@ public class SolucaoForense implements AnaliseForenseAvancada {
             String line;
             br.readLine(); // Pula o cabeçalho
             while ((line = br.readLine()) != null) {
-                if (line.trim().isEmpty()) continue;
+                if (line.trim().isEmpty()) {
+                    continue;
+                }
 
                 String[] parts = parseLine(line);
                 String userId = parts[1].trim();
@@ -68,7 +70,9 @@ public class SolucaoForense implements AnaliseForenseAvancada {
             String line;
             br.readLine();
             while ((line = br.readLine()) != null) {
-                if (line.trim().isEmpty()) continue;
+                if (line.trim().isEmpty()) {
+                    continue;
+                }
 
                 String[] parts = parseLine(line);
                 String currentSessionId = parts[2].trim();
@@ -96,23 +100,22 @@ public class SolucaoForense implements AnaliseForenseAvancada {
             String line;
             br.readLine();
             while ((line = br.readLine()) != null) {
-                if (line.trim().isEmpty()) continue;
+                if (line.trim().isEmpty()) {
+                    continue;
+                }
 
                 String[] parts = parseLine(line);
 
                 try {
-
                     long timestamp = Long.parseLong(parts[0].trim());
                     String userId = parts[1].trim();
                     String sessionId = parts[2].trim();
                     String actionType = parts[3].trim();
                     String targetResource = parts[4].trim();
-                    int severityLevel = Integer.parseInt(parts[5].trim());  // ✅ índice 5
-
+                    int severityLevel = Integer.parseInt(parts[5].trim());
 
                     String bytesStr = parts[6].trim();
-                    int bytesTransferred = bytesStr.isEmpty() ? 0 : Integer.parseInt(bytesStr);  // ✅ índice 6
-
+                    int bytesTransferred = bytesStr.isEmpty() ? 0 : Integer.parseInt(bytesStr);
 
                     priorityQueue.add(new Alerta(
                             timestamp,
@@ -124,7 +127,7 @@ public class SolucaoForense implements AnaliseForenseAvancada {
                             bytesTransferred
                     ));
                 } catch (NumberFormatException e) {
-                    continue;
+                    // Ignora linha com erro de parse
                 }
             }
         }
@@ -144,7 +147,6 @@ public class SolucaoForense implements AnaliseForenseAvancada {
             long timestamp;
             long bytesTransferred;
 
-
             TransferEntry(long timestamp, long bytesTransferred) {
                 this.timestamp = timestamp;
                 this.bytesTransferred = bytesTransferred;
@@ -157,14 +159,14 @@ public class SolucaoForense implements AnaliseForenseAvancada {
             String line;
             br.readLine();
             while ((line = br.readLine()) != null) {
-                if (line.trim().isEmpty()) continue;
+                if (line.trim().isEmpty()) {
+                    continue;
+                }
 
                 String[] parts = parseLine(line);
 
                 try {
                     long timestamp = Long.parseLong(parts[0].trim());
-
-
                     String bytesStr = parts[6].trim();
                     long bytesTransferred = bytesStr.isEmpty() ? 0 : Long.parseLong(bytesStr);
 
@@ -172,7 +174,7 @@ public class SolucaoForense implements AnaliseForenseAvancada {
                         transferLogs.add(new TransferEntry(timestamp, bytesTransferred));
                     }
                 } catch (NumberFormatException e) {
-                    continue;
+                    // Ignora linha com erro
                 }
             }
         }
@@ -201,51 +203,54 @@ public class SolucaoForense implements AnaliseForenseAvancada {
         return result;
     }
 
-    // DESAFIO 5: Rastrear Contaminação
+    // DESAFIO 5: Rastrear Contaminação (CORRIGIDO)
     @Override
     public Optional<List<String>> rastrearContaminacao(String caminhoArquivo, String recursoInicial, String recursoAlvo) throws IOException {
         Map<String, Set<String>> contaminationGraph = new HashMap<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(caminhoArquivo))) {
             String line;
-            br.readLine();
+            br.readLine(); // Pula cabeçalho
 
-            String previousResource = null;
-            String previousSessionId = null;
+            Map<String, String> sessionLastResource = new HashMap<>();
 
             while ((line = br.readLine()) != null) {
-                if (line.trim().isEmpty()) continue;
+                if (line.trim().isEmpty()) {
+                    continue;
+                }
 
                 String[] parts = parseLine(line);
                 String sessionId = parts[2].trim();
                 String targetResource = parts[4].trim();
 
                 if (!targetResource.isEmpty()) {
-                    if (sessionId.equals(previousSessionId) && previousResource != null) {
-                        if (!targetResource.equals(previousResource)) {
-                            contaminationGraph.computeIfAbsent(previousResource, k -> new HashSet<>()).add(targetResource);
+                    // Adiciona o recurso ao grafo (mesmo que não tenha conexões)
+                    contaminationGraph.putIfAbsent(targetResource, new HashSet<>());
+
+                    // Conecta com o recurso anterior da mesma sessão
+                    if (sessionLastResource.containsKey(sessionId)) {
+                        String previousResource = sessionLastResource.get(sessionId);
+                        if (!previousResource.equals(targetResource)) {
+                            contaminationGraph.get(previousResource).add(targetResource);
                         }
                     }
-                    previousResource = targetResource;
-                    previousSessionId = sessionId;
-                } else {
-                    previousResource = null;
-                    previousSessionId = null;
+
+                    sessionLastResource.put(sessionId, targetResource);
                 }
             }
         }
 
-        contaminationGraph.putIfAbsent(recursoInicial, new HashSet<>());
-
-        if (recursoInicial.equals(recursoAlvo)) {
-            boolean exists = contaminationGraph.containsKey(recursoInicial) ||
-                    contaminationGraph.values().stream().anyMatch(s -> s.contains(recursoInicial));
-            if (exists) {
-                return Optional.of(Collections.singletonList(recursoInicial));
-            }
+        // Verifica se o recurso inicial existe no grafo
+        if (!contaminationGraph.containsKey(recursoInicial)) {
             return Optional.empty();
         }
 
+        // Se origem e destino são iguais
+        if (recursoInicial.equals(recursoAlvo)) {
+            return Optional.of(Collections.singletonList(recursoInicial));
+        }
+
+        // BFS para encontrar caminho
         Queue<String> queue = new LinkedList<>();
         Map<String, String> predecessor = new HashMap<>();
         Set<String> visited = new HashSet<>();
@@ -254,14 +259,11 @@ public class SolucaoForense implements AnaliseForenseAvancada {
         visited.add(recursoInicial);
         predecessor.put(recursoInicial, null);
 
-        String foundTarget = null;
-
         while (!queue.isEmpty()) {
             String currentResource = queue.poll();
 
             if (currentResource.equals(recursoAlvo)) {
-                foundTarget = currentResource;
-                break;
+                return Optional.of(reconstructPath(predecessor, recursoInicial, recursoAlvo));
             }
 
             Set<String> neighbors = contaminationGraph.getOrDefault(currentResource, Collections.emptySet());
@@ -273,10 +275,6 @@ public class SolucaoForense implements AnaliseForenseAvancada {
                     queue.add(neighbor);
                 }
             }
-        }
-
-        if (foundTarget != null) {
-            return Optional.of(reconstructPath(predecessor, recursoInicial, recursoAlvo));
         }
 
         return Optional.empty();
