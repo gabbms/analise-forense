@@ -21,7 +21,7 @@
             <artifactId>analise-forense-api</artifactId>
             <version>1.0</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/analise-forense-api.jar</systemPath>
+            <systemPath>${project.basedir}/lib/analise-forense-aed.jar</systemPath>
         </dependency>
     </dependencies>
 
@@ -33,8 +33,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
+                    <source>16</source>
+                    <target>16</target>
                 </configuration>
             </plugin>
 

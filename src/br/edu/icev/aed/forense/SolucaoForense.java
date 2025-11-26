@@ -7,9 +7,7 @@ import java.util.*;
 
 public class SolucaoForense implements AnaliseForenseAvancada {
 
-
     public SolucaoForense() {
-
     }
 
     private String[] parseLine(String line) {
@@ -103,13 +101,18 @@ public class SolucaoForense implements AnaliseForenseAvancada {
                 String[] parts = parseLine(line);
 
                 try {
+
                     long timestamp = Long.parseLong(parts[0].trim());
                     String userId = parts[1].trim();
                     String sessionId = parts[2].trim();
                     String actionType = parts[3].trim();
                     String targetResource = parts[4].trim();
-                    long bytesTransferred = Long.parseLong(parts[5].trim());
-                    int severityLevel = Integer.parseInt(parts[6].trim());
+                    int severityLevel = Integer.parseInt(parts[5].trim());  // ✅ índice 5
+
+
+                    String bytesStr = parts[6].trim();
+                    int bytesTransferred = bytesStr.isEmpty() ? 0 : Integer.parseInt(bytesStr);  // ✅ índice 6
+
 
                     priorityQueue.add(new Alerta(
                             timestamp,
@@ -117,8 +120,8 @@ public class SolucaoForense implements AnaliseForenseAvancada {
                             sessionId,
                             actionType,
                             targetResource,
-                            (int) bytesTransferred,
-                            severityLevel
+                            severityLevel,
+                            bytesTransferred
                     ));
                 } catch (NumberFormatException e) {
                     continue;
@@ -141,6 +144,7 @@ public class SolucaoForense implements AnaliseForenseAvancada {
             long timestamp;
             long bytesTransferred;
 
+
             TransferEntry(long timestamp, long bytesTransferred) {
                 this.timestamp = timestamp;
                 this.bytesTransferred = bytesTransferred;
@@ -159,7 +163,10 @@ public class SolucaoForense implements AnaliseForenseAvancada {
 
                 try {
                     long timestamp = Long.parseLong(parts[0].trim());
-                    long bytesTransferred = Long.parseLong(parts[5].trim());
+
+
+                    String bytesStr = parts[6].trim();
+                    long bytesTransferred = bytesStr.isEmpty() ? 0 : Long.parseLong(bytesStr);
 
                     if (bytesTransferred > 0) {
                         transferLogs.add(new TransferEntry(timestamp, bytesTransferred));
